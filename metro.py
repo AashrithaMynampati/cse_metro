@@ -6,63 +6,55 @@ from PIL import Image
 from gtts import gTTS
 import base64
 
-#------------------------
 #QR GENERATION FUNCTION
-#------------------------
+
 def generate_qr(data):
-    qr=qrcode,QRCode(version=1,box_size=10,border=4)
+    qr=qrcode.QRCode(version=1,box_size=10,border=4)
     qr.add_data(data)
     qr.make(fit=True)
     img=qr.make_image(fill_color="black",back_color="white")
     return img
+
 #STREAMLIT UI
-st.set_page_config(page_title="Metro Ticket Booking",page_icon="0")
-st.title("metro ticket booking system with qr code + Auto Voice")
-stations=["Ameerpet","Miyapur","LB Nagar","KPHB","JNTU"]
+
+st.set_page_config(page_title="Metro Ticket Booking",page_icon="")
+st.title("Metro Ticket Booking System with QR Code + Auto Voice")
+stations=("Ameerpet","Miyapur","LB Nagar","KPHB","JNTU")
 name=st.text_input("Passenger Name")
 source=st.selectbox("Source Station",stations)
 destination=st.selectbox("Destination Station",stations)
-no_tickets=st.number_input("Number of tickets",min_value=1,value=1)
+no_tickets=st.number_input("Number of Tickets",min_value=1,value=1)
 price_per_ticket=30
-total_amount=no_tickets*price_per_ticket
-st.info("Total Amount:rs(total_amount)")
+total_amount=no_tickets * price_per_ticket
+st.info(f"Total Amount:(total_amount)")
 
-#BOOKING BUTTONS
-
+#BOOKING BUTTON
 if st.button("Book Ticket"):
     if name.strip()=="":
-        st.error("please enter passenger name.")
+        st.error("Please enter passenger name.")
     elif source==destination:
-        st.error("source and destination cannot be same")
+        st.error("Source and Destination cannot be the same")
     else:
-        #generate booking ID
+        #Generate booking ID
         booking_id=str(uuid.uuid4())[:8]
 
-       
+        #QR CODE GENERATION
 
-#QR CODE GENERATION
-
-
-      qr_data=(
-             f"BookingID:(booking_id)\n"
-             f"Name:(name)\nFrom: {source}\nTo:{destination}\n Tickets:{no_ticket}
-                )
+        qr_data=(
+            f"BookinID: {booking_id}\n"
+            f"Name: {name}\nFrom: {source}\nTo: {destination}\nTickets:{no_tickets}"
+            )
         qr_img=generate_qr(qr_data)
-
-             buf=BytesIO()
-            qr_img.save(buf,format="PNG")
-            qr_bytes=buf_getvalue()
+        buf=BytesIO()
+        qr_img.save(buf,format="PNG")
+        qr_bytes=buf.getvalue()
 
         st.success("Ticket Booked Successfully!")
-
         st.write("### Ticket Details ")
-        st.write(f"**Booking ID:** {booking_id}")
-        st.write(f"**Passenger:**{name}")
-        st.write(f"**From:**{source}")
-        st.write(f"**To:**{destination}")
-        st.write(f"Tickets:**{no_tickets}")
-        st.write(f"**Amount paid:** rs{total_Amount}")
-        st.image(qr_bytes, width=250)
-            
-            
-
+        st.write(f"*Booking ID:*{booking_id}")
+        st.write(f"*Passenger:* {name}")
+        st.write(f"*From:* {source}")
+        st.write(f"*To:* {destination}")
+        st.write(f"*Tickets:* {no_tickets}")
+        st.write(f"*Amount Paid:*{total_amount}")
+        st.image(qr_bytes,width=250)
