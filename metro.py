@@ -32,16 +32,13 @@ st.info("Total Amount:rs(total_amount)")
 if st.button("Book Ticket"):
     if name.strip()=="":
         st.error("please enter passenger name.")
-    elif source=destination:
+    elif source==destination:
         st.error("source and destination cannot be same")
     else:
         #generate booking ID
         booking_id=str(uuid.uuid4())[:8]
 
-        #qr code generation
-
-        qr_data=(
-            f"BookingID:(booking_id)
+       
 
 #QR CODE GENERATION
 
@@ -68,3 +65,4 @@ if st.button("Book Ticket"):
         st.image(qr_bytes, width=250)
             
             
+
